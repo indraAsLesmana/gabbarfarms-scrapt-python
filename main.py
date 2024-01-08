@@ -61,7 +61,20 @@ def get_contenttab(tabname):
                     # Clean up the JSON string
                     cleaned_json_data = json_data.replace('\n', '').replace('\xa0', ' ').strip()
                     
-                    print(cleaned_json_data)
+                     # Load the cleaned JSON data into a Python dictionary
+                    data_dict = json.loads(cleaned_json_data)
+                    # print(cleaned_json_data)
+
+                     # Check if "itemListElement" is present in the dictionary
+                    if "itemListElement" in data_dict:
+                        # Extract the "itemListElement" part
+                        item_list = data_dict["itemListElement"]
+                        
+                        # Return only the "itemListElement"
+                        print(item_list)
+                        return item_list
+                    else:
+                        return "Key 'itemListElement' not found in the JSON data."
                 else:
                     print("Script tag not found inside Leafy-panel.")
             else:
