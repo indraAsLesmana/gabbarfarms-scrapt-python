@@ -1,3 +1,4 @@
+import json
 import requests
 from config import MAIN_URL
 from bs4 import BeautifulSoup
@@ -11,30 +12,53 @@ def get_hometab():
         response = requests.get(MAIN_URL)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
-            # ul_element = soup.find('ul', class_='home__brand')
-            # print(ul_element)
+            # # ul_element = soup.find('ul', class_='home__brand')
+            # # print(ul_element)
 
-            # Find all labels with class 'tab' within the 'tabs' div
-            tab_objects = soup.select('.tabs .tab')
+            # # Find all labels with class 'tab' within the 'tabs' div
+            # tab_objects = soup.select('.tabs .tab')
 
-            # Create an empty list to store tab objects
-            listTab = []
+            # # Create an empty list to store tab objects
+            # listTab = []
 
-            # Loop through each label and extract the data
-            for tab in tab_objects:
-                name = tab.h4.text.strip()  # Extracting the text from the 'h4' tag
-                img_src = tab.img['src']    # Extracting the 'src' attribute from the 'img' tag
+            # # Loop through each label and extract the data
+            # for tab in tab_objects:
+            #     name = tab.h4.text.strip()  # Extracting the text from the 'h4' tag
+            #     img_src = tab.img['src']    # Extracting the 'src' attribute from the 'img' tag
 
-                # Create a dictionary (tabObject) with the extracted data
-                tab_object = {
-                    'name': name,
-                    'imgSrc': img_src
-                }
+            #     # Create a dictionary (tabObject) with the extracted data
+            #     tab_object = {
+            #         'name': name,
+            #         'imgSrc': img_src
+            #     }
                 
-                # Append the tab_object to the listTab
-                listTab.append(tab_object)
+            #     # Append the tab_object to the listTab
+            #     listTab.append(tab_object)
 
-            print(listTab)
+            # print(listTab)
+            
+            # for content from tab, in future make Leafy is parameterise from tab active
+            # Find the div element with id "Leafy-panel"
+            leafy_panel = soup.find('div', {'id': 'Leafy-panel'})
+
+            # Check if the Leafy-panel div is found
+            if leafy_panel:
+                # Find the script tag inside the Leafy-panel div
+                script_tag = leafy_panel.find('script', type='application/ld+json')
+
+                # Check if the script tag is found
+                if script_tag:
+                    # Extract the content of the script tag (JSON data)
+                    json_data = script_tag.string
+
+                    # Clean up the JSON string
+                    cleaned_json_data = json_data.replace('\n', '').replace('\xa0', ' ').strip()
+                   
+                    print(cleaned_json_data)
+                else:
+                    print("Script tag not found inside Leafy-panel.")
+            else:
+                print("Leafy-panel div not found.")
 
     except Exception as e:
         print(f"An error occurred: {str(e)}")
