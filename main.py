@@ -26,8 +26,8 @@ def get_hometab():
 
                 # Create a dictionary (tabObject) with the extracted data
                 tab_object = {
-                    'name': name,
-                    'imgSrc': img_src
+                    'title': name,
+                    'image_url': img_src
                 }
                 
                 # Append the tab_object to the listTab
@@ -83,10 +83,95 @@ def get_contenttab(tabname):
     except Exception as e:
         print(f"An error occurred: {str(e)}")
 
+def search_product(search_key):
+    url = f"{MAIN_URL}/search?q={search_key}"
+    print(url)
+    try:
+        # Send a GET request to the URL
+        response = requests.get(url)
+        # Check if the request was successful (status code 200)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+             # Find the div with class="container"
+            # Find the ul with class="collection_menu"
+            collection_menu_ul = soup.find('ul', class_='collection_menu')
+
+            # Check if the collection_menu_ul is found
+            if collection_menu_ul:
+                # Find the first <li> tag inside the collection_menu_ul
+                li_tag = collection_menu_ul.find('li')
+
+                # Extract and print the text content of the <li> tag
+                if li_tag:
+                    print(li_tag.get_text(strip=True))
+                else:
+                    print("No <li> tag found inside the collection_menu_ul.")
+            else:
+                print("No ul with class 'collection_menu' found.")
+
+             # Initialize a list to store the product information
+            product_list = []
+            
+            # Find the first div with class="sixteen columns"
+            sixteen_columns_div = soup.find('div', class_='sixteen columns')
+             # Check if the sixteen_columns_div is found
+            if sixteen_columns_div:
+                # Find all divs with class="product_row" inside the sixteen_columns_div
+                product_row_divs = sixteen_columns_div.find_all('div', class_='product_row')
+
+                # Loop through each product_row_div
+                for product_row_div in product_row_divs:
+                    # Extract sub_title link and value
+                    sub_title_a = product_row_div.find('h5', class_='sub_title').find('a')
+                    sub_title_link = sub_title_a['href']
+                    sub_title_value = sub_title_a.get_text(strip=True)
+
+                    # Extract was_price and money
+                    was_price_span = product_row_div.find('span', class_='was_price')
+                    was_price = was_price_span.find('span', class_='money').get_text(strip=True) if was_price_span else None
+
+                    price_span = product_row_div.find('span', class_='price')
+                    money = price_span.find('span', class_='money').get_text(strip=True) if price_span else None
+
+                    # Extract description (p tag)
+                    description_p = product_row_div.find('p').get_text(strip=True) if product_row_div.find('p') else None
+
+                    # Create a dictionary for the current product
+                    product_dict = {
+                        "sub_title_link": sub_title_link,
+                        "sub_title_value": sub_title_value,
+                        "was_price": was_price,
+                        "money": money,
+                        "description": description_p
+                    }
+
+                    # Add the product dictionary to the list
+                    product_list.append(product_dict)
+
+                    # Print or use the extracted information as needed
+                    # print("Sub Title Link:", sub_title_link)
+                    # print("Sub Title Value:", sub_title_value)
+                    # print("Was Price:", was_price)
+                    # print("Money:", money)
+                    # print("Description:", description_p)
+                    # print("------")
+                
+                 # Convert the list of products to JSON
+                json_result = json.dumps(product_list, indent=2)
+                print(json_result)
+
+            else:
+                print("No div with class 'sixteen columns' found.")
+
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+   
 
 def main():
     # get_hometab()
-    get_contenttab("Leafy")
+    # get_contenttab("Leafy")
+    search_product("spinach")
 
 if __name__ == '__main__':
     main()
