@@ -34,6 +34,7 @@ def get_hometab():
                 listTab.append(tab_object)
 
             print(listTab)
+            return listTab
 
     except Exception as e:
         print(f"An error occurred: {str(e)}")

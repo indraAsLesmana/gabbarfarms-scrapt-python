@@ -1,6 +1,6 @@
 from dbconnection import DBconnection
 from flask import Flask, Response, jsonify, g, request
-from main import search_product
+from main import get_hometab, search_product
 
 
 app = Flask(__name__)
@@ -67,6 +67,13 @@ def search_product_api():
         else:
             return jsonify({"message": "No products found for the given search key."}), 404
 
+@app.route('/api/tab', methods=['GET'])
+@requires_auth
+def get_tab():
+    db = get_db()
+    cached_result = db.
+    list_tab = get_hometab()
+    return jsonify(list_tab)    
 
 @app.route('/')
 def index():
@@ -75,3 +82,4 @@ def index():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+    # app.run(debug=True)
