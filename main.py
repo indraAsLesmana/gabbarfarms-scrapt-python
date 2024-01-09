@@ -92,24 +92,8 @@ def search_product(search_key):
         # Check if the request was successful (status code 200)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'html.parser')
-             # Find the div with class="container"
-            # Find the ul with class="collection_menu"
-            collection_menu_ul = soup.find('ul', class_='collection_menu')
-
-            # Check if the collection_menu_ul is found
-            if collection_menu_ul:
-                # Find the first <li> tag inside the collection_menu_ul
-                li_tag = collection_menu_ul.find('li')
-
-                # Extract and print the text content of the <li> tag
-                if li_tag:
-                    print(li_tag.get_text(strip=True))
-                else:
-                    print("No <li> tag found inside the collection_menu_ul.")
-            else:
-                print("No ul with class 'collection_menu' found.")
-
-             # Initialize a list to store the product information
+            
+            # Initialize a list to store the product information
             product_list = []
             
             # Find the first div with class="sixteen columns"
@@ -171,7 +155,7 @@ def search_product(search_key):
 def main():
     # get_hometab()
     # get_contenttab("Leafy")
-    search_product("spinach")
+    search_product("tofu")
 
 if __name__ == '__main__':
     main()
