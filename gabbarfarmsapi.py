@@ -1,5 +1,5 @@
 from dbconnection import DBconnection
-from flask import Flask, jsonify, request, Response, g
+from flask import Flask, Response, jsonify, g, request
 from main import search_product
 
 

@@ -140,9 +140,11 @@ def search_product(search_key):
                     # print("Description:", description_p)
                     # print("------")
                 
-                 # Convert the list of products to JSON
-                json_result = json.dumps(product_list, indent=2)
-                print(json_result)
+                # Convert the list of products to JSON
+                # json_result = json.dumps(product_list, indent=2)
+                # print(json_result)
+
+                return product_list
 
             else:
                 print("No div with class 'sixteen columns' found.")
