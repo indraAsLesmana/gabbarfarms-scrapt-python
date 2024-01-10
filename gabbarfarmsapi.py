@@ -71,9 +71,23 @@ def search_product_api():
 @requires_auth
 def get_tab():
     db = get_db()
-    cached_result = db.
-    list_tab = get_hometab()
-    return jsonify(list_tab)    
+    cached_result = db.get_cached_result("tab")
+
+    if cached_result:
+        # If the result is cached in the database, return it
+        print("result from cached")
+        return jsonify(cached_result)
+    else:
+        # Call the search_product function and store the results
+        products = get_hometab()
+        # Check if products were found
+        if products:
+            # Save the search key and its result to the database
+            db.save_tab_result(products)
+            return jsonify(products)
+        else:
+            return jsonify({"message": "No products found for the given search key."}), 404
+
 
 @app.route('/')
 def index():

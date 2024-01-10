@@ -157,8 +157,8 @@ def search_product(search_key):
 
 def main():
     # get_hometab()
-    # get_contenttab("Leafy")
-    search_product("tofu")
+    get_contenttab("Leafy")
+    # search_product("tofu")
 
 if __name__ == '__main__':
     main()

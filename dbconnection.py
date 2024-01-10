@@ -39,7 +39,11 @@ class DBconnection:
     def get_cached_result(self, search_key):
             try:
                 # Execute a query to retrieve cached results for the given search_key
-                self.cursor.execute('SELECT result, timestamp FROM search_cache WHERE search_key = ?', (search_key,))
+                if search_key == "tab" :
+                    self.cursor.execute('SELECT result, timestamp FROM tab_cache')
+                else: 
+                    self.cursor.execute('SELECT result, timestamp FROM search_cache WHERE search_key = ?', (search_key,))     
+
                 cached_result = self.cursor.fetchone()
 
                 if cached_result:
@@ -57,14 +61,17 @@ class DBconnection:
                         # If the cache is still valid, parse the result from JSON and return
                         return json.loads(cached_result_json)
                     else:
-                        # If the cache has expired, remove it from the database
-                        self.cursor.execute('DELETE FROM search_cache WHERE search_key = ?', (search_key,))
+                        # Execute a query to retrieve cached results for the given search_key
+                        if search_key == "tab" :
+                            self.cursor.execute('DELETE FROM tab_cache WHERE search_key = ?', (search_key,))
+                        else:     
+                            # If the cache has expired, remove it from the database
+                            self.cursor.execute('DELETE FROM search_cache WHERE search_key = ?', (search_key,))
                         self.conn.commit()
 
             except sqlite3.Error as e:
                 print("Error while retrieving cached result:", e)  # Debugging statement
                 raise e
-
             return None  # Return None if no cached result found
 
     def save_search_result(self, search_key, result):
@@ -72,7 +79,7 @@ class DBconnection:
             # Get the current timestamp
             current_time = datetime.datetime.now()
 
-            # Insert or replace the search key, result, and timestamp into the search_cache table
+            # Insert or replace the result, and timestamp into the search_cache table
             self.cursor.execute('INSERT OR REPLACE INTO search_cache (search_key, result, timestamp) VALUES (?, ?, ?)',
                                 (search_key.lower(), json.dumps(result), current_time))
             self.conn.commit()
@@ -80,6 +87,17 @@ class DBconnection:
             print("Error while saving search result:", e)  # Debugging statement
             raise e
 
+    def save_tab_result(self, result):
+        try:
+            # Get the current timestamp
+            current_time = datetime.datetime.now()
+            # Insert or replace the search key, result, and timestamp into the search_cache table
+            self.cursor.execute('INSERT OR REPLACE INTO tab_cache (result, timestamp) VALUES (?, ?)',
+                                (json.dumps(result), current_time))
+            self.conn.commit()
+        except sqlite3.Error as e:
+            print("Error while saving search result:", e)  # Debugging statement
+            raise e
 
     def create_table(self):
             self.cursor.execute('''
@@ -93,6 +111,15 @@ class DBconnection:
             # Create the search_cache table with a timestamp column
             self.cursor.execute('''
                         CREATE TABLE IF NOT EXISTS search_cache (
+                            search_key TEXT PRIMARY KEY,
+                            result TEXT,
+                            timestamp TIMESTAMP
+                        )
+                    ''')
+            
+            # Create the tab_cache table with a timestamp column
+            self.cursor.execute('''
+                        CREATE TABLE IF NOT EXISTS tab_cache (
                             search_key TEXT PRIMARY KEY,
                             result TEXT,
                             timestamp TIMESTAMP
