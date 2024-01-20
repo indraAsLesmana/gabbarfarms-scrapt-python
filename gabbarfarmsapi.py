@@ -106,12 +106,13 @@ def get_tabcontent():
         # Call the search_product function and store the results
         products = get_contenttab(search_key)
 
-        # save all item with category from search key
-        for product in products:
-            product['Category'] = search_key
-
         # Check if products were found
         if products:
+
+            # save all item with category from search key
+            for product in products:
+                product['Category'] = search_key
+                
             # Save the search key and its result to the database
             db.save_search_result(search_key, products)
             return jsonify(products)
