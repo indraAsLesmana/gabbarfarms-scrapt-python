@@ -96,7 +96,7 @@ def get_tabcontent():
     
     # Check if the result for this key exists in the database
     db = get_db()
-    cached_result = db.get_cached_result(search_key.lower())
+    cached_result = db.get_cached_result(search_key.strip().lower())
 
     if cached_result:
         # If the result is cached in the database, return it

@@ -1,3 +1,4 @@
+import ast
 import json
 import requests
 from config import MAIN_URL
@@ -60,9 +61,13 @@ def get_contenttab(tabname):
                     json_data = script_tag.string
 
                     # Clean up the JSON string
-                    cleaned_json_data = json_data.replace('\n', '').replace('\xa0', ' ').strip()
-                    
-                     # Load the cleaned JSON data into a Python dictionary
+                    cleaned_json_data = json_data.replace('\n', '').replace('\xa0', ' ').replace('\\', ' ').strip()
+
+                    # cleaned_json_data = cleaned_json_data.strip("'")
+                    # Replace escaped characters with their unescaped counterparts
+                    # cleaned_json_data = cleaned_json_data.replace('\\n', '\n').replace('\\xa0', ' ')
+
+                    # Load the cleaned JSON data into a Python dictionary
                     data_dict = json.loads(cleaned_json_data)
                     # print(cleaned_json_data)
 
