@@ -8,16 +8,16 @@ RUN apt-get update && apt-get install -y python3 python3-pip
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY /WORKDIR/gabbarfarmsapi.py /app/
-COPY /WORKDIR/dbconnection.py /app/
-COPY /WORKDIR/main.py /app/
-COPY /WORKDIR/config.py /app/
+COPY ./gabbarfarmsapi.py /app/
+COPY ./dbconnection.py /app/
+COPY ./main.py /app/
+COPY ./config.py /app/
 
 # Define environment variable
 # ENV NAME PythonDocker
 
 # Copy your Python script and requirements file into the container
-COPY /WORKDIR/requirements.txt /app/
+COPY ./requirements.txt /app/
 
 # Expose the port on which your Flask application will run
 EXPOSE 5500
